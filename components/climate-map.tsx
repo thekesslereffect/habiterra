@@ -13,10 +13,13 @@ import {
   MAP_STYLES,
   PRICE_COLOR_HIGH,
   PRICE_COLOR_LOW,
+  TEMP_COLOR_HIGH,
+  TEMP_COLOR_LOW,
   WORLD_VIEW,
 } from "@/lib/constants"
 import type {
   AdminClimateSource,
+  MatchGradientMode,
   RegionFeatureCollection,
   RegionFeatureProps,
   RegionPick,
@@ -31,6 +34,8 @@ type ClimateMapProps = {
   isDark: boolean
   popup: RegionPick | null
   onRegionPick: (pick: RegionPick | null) => void
+  /** Choropleth for matched regions: price vs mean typical temperature. */
+  matchGradientMode?: MatchGradientMode
   /** When false, parent renders mobile UI (e.g. bottom sheet) instead of MapLibre Popup. */
   mapPopup?: boolean
 }
@@ -78,6 +83,7 @@ function parseProps(raw: Record<string, unknown>): RegionFeatureProps {
     portalsJson: String(raw.portalsJson ?? "[]"),
     matched,
     priceNorm: num(raw.priceNorm),
+    tempNorm: num(raw.tempNorm),
   }
 }
 
@@ -98,30 +104,36 @@ export function ClimateMap({
   isDark,
   popup,
   onRegionPick,
+  matchGradientMode = "price",
   mapPopup = true,
 }: ClimateMapProps) {
   const mapStyle = isDark ? MAP_STYLES.dark : MAP_STYLES.light
 
-  const fillPaint = useMemo(
-    () => ({
+  const fillPaint = useMemo(() => {
+    const normKey =
+      matchGradientMode === "temperature" ? "tempNorm" : "priceNorm"
+    const low =
+      matchGradientMode === "temperature" ? TEMP_COLOR_LOW : PRICE_COLOR_LOW
+    const high =
+      matchGradientMode === "temperature" ? TEMP_COLOR_HIGH : PRICE_COLOR_HIGH
+    return {
       "fill-color": [
         "case",
         ["==", ["get", "matched"], 1],
         [
           "interpolate",
           ["linear"],
-          ["coalesce", ["get", "priceNorm"], 0],
+          ["coalesce", ["get", normKey], 0],
           0,
-          PRICE_COLOR_LOW,
+          low,
           1,
-          PRICE_COLOR_HIGH,
+          high,
         ],
         "rgba(0,0,0,0)",
       ],
       "fill-opacity": 0.72,
-    }),
-    [],
-  )
+    }
+  }, [matchGradientMode])
 
   /** Admin-1 borders stay readable at world zoom (unmatched were nearly invisible). */
   const admin1LinePaint = useMemo(

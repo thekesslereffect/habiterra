@@ -245,6 +245,7 @@ async function main() {
         portalsJson: JSON.stringify(portals),
         matched: 0,
         priceNorm: null,
+        tempNorm: null,
       },
     })
   }

@@ -32,6 +32,10 @@ export const PRICE_SLIDER_DOMAIN: [number, number] = [0, 2_000_000]
 export const PRICE_COLOR_LOW = "#22c55e"
 export const PRICE_COLOR_HIGH = "#ef4444"
 
+/** Choropleth: cooler mean typical temp (°F) → warmer among matched regions */
+export const TEMP_COLOR_LOW = "#2563eb"
+export const TEMP_COLOR_HIGH = "#ea580c"
+
 /** First two digits of county FIPS → USPS state abbreviation */
 export const STATE_FIPS_TO_ABBR: Record<string, string> = {
   "01": "AL",

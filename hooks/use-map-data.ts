@@ -51,6 +51,7 @@ function parseAdmin1Base(
         portalsJson: String(p.portalsJson ?? "[]"),
         matched: 0,
         priceNorm: null,
+        tempNorm: null,
       } satisfies RegionFeatureProps,
     }
   })
@@ -111,6 +112,7 @@ function buildUsCountyFeatures(
       portalsJson: JSON.stringify(portals),
       matched: 0,
       priceNorm: null,
+      tempNorm: null,
     }
 
     return {
@@ -136,6 +138,7 @@ function applyFilters(
   const { tempMin, tempMax, priceMin, priceMax } = filters
 
   const pricedMatches: number[] = []
+  const tempMids: number[] = []
   for (const f of base.features) {
     const p = f.properties
     if (p.tmin === null || p.tmax === null) continue
@@ -143,17 +146,25 @@ function applyFilters(
     const hasPrice = mp !== null && Number.isFinite(mp)
     const tempOk = p.tmin >= tempMin && p.tmax <= tempMax
     const priceOk = hasPrice && mp >= priceMin && mp <= priceMax
-    if (tempOk && priceOk) pricedMatches.push(mp)
+    if (tempOk && priceOk) {
+      pricedMatches.push(mp)
+      tempMids.push((p.tmin + p.tmax) / 2)
+    }
   }
 
   const pMin = pricedMatches.length > 0 ? Math.min(...pricedMatches) : 0
   const pMax = pricedMatches.length > 0 ? Math.max(...pricedMatches) : 1
   const pSpan = pMax - pMin || 1
 
+  const tMidMin = tempMids.length > 0 ? Math.min(...tempMids) : 0
+  const tMidMax = tempMids.length > 0 ? Math.max(...tempMids) : 1
+  const tSpan = tMidMax - tMidMin || 1
+
   const features = base.features.map((f) => {
     const p = f.properties
     let matched: 0 | 1 = 0
     let priceNorm: number | null = null
+    let tempNorm: number | null = null
 
     if (p.tmin !== null && p.tmax !== null) {
       const mp = p.medianPrice
@@ -164,13 +175,15 @@ function applyFilters(
       matched = ok ? 1 : 0
       if (ok) {
         priceNorm = (mp - pMin) / pSpan
+        const mid = (p.tmin + p.tmax) / 2
+        tempNorm = (mid - tMidMin) / tSpan
       }
     }
 
     return {
       ...f,
       type: "Feature" as const,
-      properties: { ...p, matched, priceNorm },
+      properties: { ...p, matched, priceNorm, tempNorm },
     }
   })
 

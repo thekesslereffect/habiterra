@@ -7,9 +7,8 @@ import { ClimateMap } from "@/components/climate-map"
 import { FilterPanel } from "@/components/filter-panel"
 import { RegionBottomSheet } from "@/components/region-bottom-sheet"
 import { useIsNarrowScreen } from "@/hooks/use-is-narrow-screen"
-import type { RegionPick } from "@/lib/types"
 import { DEFAULT_FILTERS } from "@/lib/constants"
-import type { FilterState } from "@/lib/types"
+import type { FilterState, MatchGradientMode, RegionPick } from "@/lib/types"
 import { useMapData } from "@/hooks/use-map-data"
 
 export default function HomePage() {
@@ -17,6 +16,8 @@ export default function HomePage() {
   const isDark = resolvedTheme === "dark"
 
   const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS)
+  const [matchGradientMode, setMatchGradientMode] =
+    useState<MatchGradientMode>("price")
   const [popup, setPopup] = useState<RegionPick | null>(null)
 
   const { collection, matchCount, loading, error } = useMapData(filters)
@@ -30,6 +31,7 @@ export default function HomePage() {
             data={collection}
             isDark={isDark}
             popup={popup}
+            matchGradientMode={matchGradientMode}
             mapPopup={!narrowScreen}
             onRegionPick={setPopup}
           />
@@ -45,6 +47,8 @@ export default function HomePage() {
           <FilterPanel
             filters={filters}
             onFiltersChange={setFilters}
+            matchGradientMode={matchGradientMode}
+            onMatchGradientModeChange={setMatchGradientMode}
             matchCount={matchCount}
             loading={loading}
             error={error}

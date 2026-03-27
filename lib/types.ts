@@ -7,6 +7,9 @@ export type FilterState = {
   priceMax: number
 }
 
+/** Choropleth for matched regions: price vs mean typical temperature (°F). */
+export type MatchGradientMode = "price" | "temperature"
+
 export type ClimateRecord = {
   tmin: number
   tmax: number
@@ -53,7 +56,10 @@ export type RegionFeatureProps = {
   climateSource?: AdminClimateSource
   portalsJson: string
   matched: 0 | 1
+  /** 0–1 among matched regions by median price (for map fill). */
   priceNorm: number | null
+  /** 0–1 among matched regions by mean of tmin/tmax °F (for map fill). */
+  tempNorm: number | null
 }
 
 export type RegionFeature = Feature<Polygon | MultiPolygon, RegionFeatureProps>

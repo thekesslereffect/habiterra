@@ -10,13 +10,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { PriceFilter } from "@/components/price-filter"
 import { TemperatureFilter } from "@/components/temperature-filter"
-import { PRICE_COLOR_HIGH, PRICE_COLOR_LOW } from "@/lib/constants"
+import {
+  PRICE_COLOR_HIGH,
+  PRICE_COLOR_LOW,
+  TEMP_COLOR_HIGH,
+  TEMP_COLOR_LOW,
+} from "@/lib/constants"
 import { cn } from "@/lib/utils"
-import type { FilterState } from "@/lib/types"
+import type { FilterState, MatchGradientMode } from "@/lib/types"
 
 type FilterPanelProps = {
   filters: FilterState
   onFiltersChange: (next: FilterState) => void
+  matchGradientMode: MatchGradientMode
+  onMatchGradientModeChange: (mode: MatchGradientMode) => void
   matchCount: number
   loading: boolean
   error: string | null
@@ -25,6 +32,8 @@ type FilterPanelProps = {
 export function FilterPanel({
   filters,
   onFiltersChange,
+  matchGradientMode,
+  onMatchGradientModeChange,
   matchCount,
   loading,
   error,
@@ -114,19 +123,64 @@ export function FilterPanel({
           onChange={(p) => onFiltersChange({ ...filters, ...p })}
         />
         <Separator />
-        <div className="space-y-1.5 pb-1">
+        <div className="space-y-2 pb-1">
           <p className="text-muted-foreground text-xs font-medium">
-            Match color (median price)
+            Match color
           </p>
           <div
-            className="h-2 w-full rounded-full"
-            style={{
-              background: `linear-gradient(90deg, ${PRICE_COLOR_LOW}, ${PRICE_COLOR_HIGH})`,
-            }}
-          />
-          <div className="text-muted-foreground flex justify-between text-[0.65rem]">
-            <span>Lower</span>
-            <span>Higher</span>
+            className="bg-muted grid grid-cols-2 gap-0.5 rounded-lg p-0.5"
+            role="group"
+            aria-label="Color map by price or temperature"
+          >
+            <Button
+              type="button"
+              variant={matchGradientMode === "price" ? "secondary" : "ghost"}
+              size="sm"
+              className="h-8 touch-manipulation text-xs"
+              onClick={() => onMatchGradientModeChange("price")}
+            >
+              Price
+            </Button>
+            <Button
+              type="button"
+              variant={
+                matchGradientMode === "temperature" ? "secondary" : "ghost"
+              }
+              size="sm"
+              className="h-8 touch-manipulation text-xs"
+              onClick={() => onMatchGradientModeChange("temperature")}
+            >
+              Temperature
+            </Button>
+          </div>
+          <div className="space-y-1.5">
+            <p className="text-muted-foreground text-[0.65rem] leading-snug">
+              {matchGradientMode === "price"
+                ? "Among matches, by median listing price"
+                : "Among matches, by mean typical range (°F)"}
+            </p>
+            <div
+              className="h-2 w-full rounded-full"
+              style={{
+                background:
+                  matchGradientMode === "price"
+                    ? `linear-gradient(90deg, ${PRICE_COLOR_LOW}, ${PRICE_COLOR_HIGH})`
+                    : `linear-gradient(90deg, ${TEMP_COLOR_LOW}, ${TEMP_COLOR_HIGH})`,
+              }}
+            />
+            <div className="text-muted-foreground flex justify-between text-[0.65rem]">
+              {matchGradientMode === "price" ? (
+                <>
+                  <span>Lower</span>
+                  <span>Higher</span>
+                </>
+              ) : (
+                <>
+                  <span>Cooler</span>
+                  <span>Warmer</span>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </CardContent>
