@@ -177,33 +177,9 @@ export function ClimateMap({
     ] as const
   }, [popup])
 
-  const selectionHaloPaint = useMemo(
+  const selectionOutlinePaint = useMemo(
     () => ({
-      "line-color": isDark
-        ? "rgba(251, 191, 36, 0.45)"
-        : "rgba(217, 119, 6, 0.4)",
-      "line-width": [
-        "interpolate",
-        ["linear"],
-        ["zoom"],
-        1.5,
-        10,
-        4,
-        18,
-        8,
-        28,
-        14,
-        36,
-      ],
-      "line-blur": 1.25,
-      "line-opacity": 1,
-    }),
-    [isDark],
-  )
-
-  const selectionCorePaint = useMemo(
-    () => ({
-      "line-color": isDark ? "#fde68a" : "#b45309",
+      "line-color": isDark ? "#ffffff" : "#0a0a0a",
       "line-width": [
         "interpolate",
         ["linear"],
@@ -276,18 +252,10 @@ export function ClimateMap({
         />
         {selectionFilter ? (
           <Layer
-            id="selection-highlight-halo"
+            id="selection-highlight-outline"
             type="line"
             filter={selectionFilter as never}
-            paint={selectionHaloPaint as Record<string, unknown>}
-          />
-        ) : null}
-        {selectionFilter ? (
-          <Layer
-            id="selection-highlight-core"
-            type="line"
-            filter={selectionFilter as never}
-            paint={selectionCorePaint as Record<string, unknown>}
+            paint={selectionOutlinePaint as Record<string, unknown>}
           />
         ) : null}
       </Source>
