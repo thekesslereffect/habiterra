@@ -141,6 +141,7 @@
   box-shadow:
     0 10px 15px -3px rgb(0 0 0 / 0.12),
     0 4px 6px -4px rgb(0 0 0 / 0.08) !important;
+  padding: 0.75rem !important;
 }
 
 .dark .maplibregl-popup-content {
@@ -167,16 +168,6 @@
 
 .maplibregl-popup-anchor-right .maplibregl-popup-tip {
   border-left-color: var(--card) !important;
-}
-
-.maplibregl-popup-close-button {
-  color: var(--card-foreground) !important;
-  opacity: 0.75;
-}
-
-.maplibregl-popup-close-button:hover {
-  background-color: var(--muted) !important;
-  opacity: 1;
 }
 
 /* Map overlay: parent uses pointer-events-none; this restores taps + safe-area insets.

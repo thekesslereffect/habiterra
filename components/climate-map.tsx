@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useMemo } from "react"
+import { X } from "lucide-react"
 import Map, {
   Layer,
   Popup,
@@ -9,6 +10,7 @@ import Map, {
 } from "react-map-gl/maplibre"
 
 import { RegionPopupContent } from "@/components/region-popup"
+import { Button } from "@/components/ui/button"
 import {
   MAP_STYLES,
   PRICE_COLOR_HIGH,
@@ -278,12 +280,26 @@ export function ClimateMap({
           anchor="bottom"
           offset={14}
           onClose={() => onRegionPick(null)}
-          closeButton
+          closeButton={false}
           closeOnClick={false}
           maxWidth="min(100vw - 1.5rem, 22rem)"
-          className="max-sm:[&_.maplibregl-popup-close-button]:size-9 max-sm:[&_.maplibregl-popup-close-button]:text-lg [&_.maplibregl-popup-content]:max-h-[min(70dvh,32rem)] [&_.maplibregl-popup-content]:overflow-y-auto [&_.maplibregl-popup-content]:p-3 sm:[&_.maplibregl-popup-content]:max-h-none sm:[&_.maplibregl-popup-content]:overflow-visible"
+          className="[&_.maplibregl-popup-content]:max-h-[min(70dvh,32rem)] [&_.maplibregl-popup-content]:overflow-y-auto sm:[&_.maplibregl-popup-content]:max-h-none sm:[&_.maplibregl-popup-content]:overflow-visible"
         >
-          <RegionPopupContent props={popup.props} />
+          <div className="relative min-w-0">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="text-muted-foreground hover:text-foreground absolute top-1 right-1 z-10 size-10 shrink-0 rounded-lg touch-manipulation"
+              onClick={() => onRegionPick(null)}
+              aria-label="Close"
+            >
+              <X className="size-6" aria-hidden />
+            </Button>
+            <div className="min-w-0">
+              <RegionPopupContent props={popup.props} />
+            </div>
+          </div>
         </Popup>
       ) : null}
     </Map>

@@ -132,26 +132,30 @@ export function FilterPanel({
             role="group"
             aria-label="Color map by price or temperature"
           >
-            <Button
+            <button
               type="button"
-              variant={matchGradientMode === "price" ? "secondary" : "ghost"}
-              size="sm"
-              className="h-8 touch-manipulation text-xs"
+              className={cn(
+                "h-8 flex-1 rounded-md text-xs font-medium touch-manipulation transition-all",
+                matchGradientMode === "price"
+                  ? "bg-background/50 text-foreground shadow-sm ring-1 ring-border/50"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
               onClick={() => onMatchGradientModeChange("price")}
             >
               Price
-            </Button>
-            <Button
+            </button>
+            <button
               type="button"
-              variant={
-                matchGradientMode === "temperature" ? "secondary" : "ghost"
-              }
-              size="sm"
-              className="h-8 touch-manipulation text-xs"
+              className={cn(
+                "h-8 flex-1 rounded-md text-xs font-medium touch-manipulation transition-all",
+                matchGradientMode === "temperature"
+                  ? "bg-background/50 text-foreground shadow-sm ring-1 ring-border/50"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
               onClick={() => onMatchGradientModeChange("temperature")}
             >
               Temperature
-            </Button>
+            </button>
           </div>
           <div className="space-y-1.5">
             <p className="text-muted-foreground text-[0.65rem] leading-snug">
