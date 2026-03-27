@@ -34,3 +34,7 @@ pnpm-debug.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# WorldClim GeoTIFF cache (downloaded by scripts/build-admin1-layer.ts)
+/data/worldclim/*.tif
+/data/worldclim/*.zip

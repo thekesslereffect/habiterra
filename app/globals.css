@@ -120,10 +120,61 @@
   * {
     @apply border-border outline-ring/50;
     }
-  body {
-    @apply bg-background text-foreground;
-    }
   html {
-    @apply font-sans;
+    @apply font-sans h-full overflow-hidden;
     }
+  body {
+    @apply bg-background text-foreground h-full overflow-hidden;
+    }
+}
+
+/*
+ * MapLibre GL ships hardcoded light popup colors (#fff). Those rules usually load
+ * after this file and beat Tailwind utilities on the popup. Use theme tokens +
+ * !important so the county popup follows :root / .dark like the rest of the UI.
+ */
+.maplibregl-popup-content {
+  background-color: var(--card) !important;
+  color: var(--card-foreground) !important;
+  border-radius: var(--radius-lg) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow:
+    0 10px 15px -3px rgb(0 0 0 / 0.12),
+    0 4px 6px -4px rgb(0 0 0 / 0.08) !important;
+}
+
+.dark .maplibregl-popup-content {
+  box-shadow:
+    0 10px 15px -3px rgb(0 0 0 / 0.45),
+    0 4px 6px -4px rgb(0 0 0 / 0.35) !important;
+}
+
+.maplibregl-popup-anchor-top .maplibregl-popup-tip,
+.maplibregl-popup-anchor-top-left .maplibregl-popup-tip,
+.maplibregl-popup-anchor-top-right .maplibregl-popup-tip {
+  border-bottom-color: var(--card) !important;
+}
+
+.maplibregl-popup-anchor-bottom .maplibregl-popup-tip,
+.maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip,
+.maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip {
+  border-top-color: var(--card) !important;
+}
+
+.maplibregl-popup-anchor-left .maplibregl-popup-tip {
+  border-right-color: var(--card) !important;
+}
+
+.maplibregl-popup-anchor-right .maplibregl-popup-tip {
+  border-left-color: var(--card) !important;
+}
+
+.maplibregl-popup-close-button {
+  color: var(--card-foreground) !important;
+  opacity: 0.75;
+}
+
+.maplibregl-popup-close-button:hover {
+  background-color: var(--muted) !important;
+  opacity: 1;
 }
