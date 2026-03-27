@@ -178,3 +178,18 @@
   background-color: var(--muted) !important;
   opacity: 1;
 }
+
+/* Map overlay: parent uses pointer-events-none; this restores taps + safe-area insets.
+   Avoids Tailwind arbitrary classes with commas inside max() which often break parsing. */
+.filter-map-overlay-pad {
+  box-sizing: border-box;
+  padding-top: calc(0.75rem + env(safe-area-inset-top, 0px));
+  padding-left: calc(0.75rem + env(safe-area-inset-left, 0px));
+  padding-right: calc(0.75rem + env(safe-area-inset-right, 0px));
+}
+
+@media (min-width: 640px) {
+  .filter-map-overlay-pad {
+    padding: 0;
+  }
+}

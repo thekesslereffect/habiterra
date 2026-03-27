@@ -63,6 +63,13 @@ export type RegionFeatureCollection = FeatureCollection<
   RegionFeatureProps
 >
 
+/** Map tap selection (desktop popup anchor or mobile sheet). */
+export type RegionPick = {
+  props: RegionFeatureProps
+  lng: number
+  lat: number
+}
+
 /** @deprecated */
 export type CountyFeatureProps = RegionFeatureProps
 

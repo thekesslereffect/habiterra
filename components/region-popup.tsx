@@ -39,7 +39,14 @@ function priceSourceNote(source: RegionFeatureProps["priceSource"]): string {
   }
 }
 
-export function RegionPopupContent({ props: p }: { props: RegionFeatureProps }) {
+export function RegionPopupContent({
+  props: p,
+  hideTitle = false,
+}: {
+  props: RegionFeatureProps
+  /** Mobile sheet shows name in its header; keep subtitle + id only here. */
+  hideTitle?: boolean
+}) {
   const portals = parsePortals(p.portalsJson)
   const isCounty = p.regionKind === "us_county"
   const isAdmin1 = p.regionKind === "admin1"
@@ -48,22 +55,28 @@ export function RegionPopupContent({ props: p }: { props: RegionFeatureProps }) 
   const subtitle = isCounty
     ? p.stateAbbr
     : p.adminName || p.iso2
+  const idLine = isCounty
+    ? `FIPS ${p.id}`
+    : p.iso3166_2
+      ? p.iso3166_2
+      : `ISO ${p.iso2}`
 
   return (
-    <div className="text-card-foreground min-w-[240px] max-w-[280px] space-y-3 p-1 text-sm">
-      <div>
-        <p className="text-muted-foreground text-xs tracking-wide uppercase">
-          {subtitle}
-        </p>
-        <p className="text-base font-semibold">{title}</p>
-        <p className="text-muted-foreground font-mono text-xs">
-          {isCounty
-            ? `FIPS ${p.id}`
-            : p.iso3166_2
-              ? p.iso3166_2
-              : `ISO ${p.iso2}`}
-        </p>
-      </div>
+    <div className="text-card-foreground min-w-0 max-w-full space-y-3 p-1 text-sm sm:min-w-[240px] sm:max-w-[280px]">
+      {hideTitle ? (
+        <div className="text-muted-foreground flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-xs">
+          <span className="tracking-wide uppercase">{subtitle}</span>
+          <span className="font-mono">{idLine}</span>
+        </div>
+      ) : (
+        <div>
+          <p className="text-muted-foreground text-xs tracking-wide uppercase">
+            {subtitle}
+          </p>
+          <p className="text-base font-semibold">{title}</p>
+          <p className="text-muted-foreground font-mono text-xs">{idLine}</p>
+        </div>
+      )}
 
       <Separator />
 

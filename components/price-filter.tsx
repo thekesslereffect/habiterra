@@ -16,10 +16,10 @@ export function PriceFilter({
   onChange,
 }: PriceFilterProps) {
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between gap-2">
+    <div className="space-y-3 sm:space-y-2">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <span className="text-xs font-medium">Median list price</span>
-        <div className="flex flex-wrap items-center justify-end gap-1">
+        <div className="flex flex-wrap items-stretch gap-1.5 sm:items-center sm:justify-end">
           <Badge variant="secondary" className="font-mono text-xs tabular-nums">
             {formatPrice(priceMin)}
           </Badge>
@@ -37,7 +37,7 @@ export function PriceFilter({
           const [a, b] = v
           onChange({ priceMin: Math.min(a, b), priceMax: Math.max(a, b) })
         }}
-        className="py-1"
+        className="py-2 sm:py-1"
       />
       <p className="text-muted-foreground text-[0.65rem] leading-snug">
         Median listing price applies to US counties only (Realtor.com research

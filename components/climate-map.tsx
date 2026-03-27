@@ -19,21 +19,20 @@ import type {
   AdminClimateSource,
   RegionFeatureCollection,
   RegionFeatureProps,
+  RegionPick,
 } from "@/lib/types"
 
 import "maplibre-gl/dist/maplibre-gl.css"
 
-export type RegionPick = {
-  props: RegionFeatureProps
-  lng: number
-  lat: number
-}
+export type { RegionPick } from "@/lib/types"
 
 type ClimateMapProps = {
   data: RegionFeatureCollection
   isDark: boolean
   popup: RegionPick | null
   onRegionPick: (pick: RegionPick | null) => void
+  /** When false, parent renders mobile UI (e.g. bottom sheet) instead of MapLibre Popup. */
+  mapPopup?: boolean
 }
 
 function parseProps(raw: Record<string, unknown>): RegionFeatureProps {
@@ -99,6 +98,7 @@ export function ClimateMap({
   isDark,
   popup,
   onRegionPick,
+  mapPopup = true,
 }: ClimateMapProps) {
   const mapStyle = isDark ? MAP_STYLES.dark : MAP_STYLES.light
 
@@ -168,6 +168,60 @@ export function ClimateMap({
     [isDark],
   )
 
+  const selectionFilter = useMemo(() => {
+    if (!popup) return null
+    return [
+      "all",
+      ["==", ["to-string", ["get", "id"]], popup.props.id],
+      ["==", ["get", "regionKind"], popup.props.regionKind],
+    ] as const
+  }, [popup])
+
+  const selectionHaloPaint = useMemo(
+    () => ({
+      "line-color": isDark
+        ? "rgba(251, 191, 36, 0.45)"
+        : "rgba(217, 119, 6, 0.4)",
+      "line-width": [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        1.5,
+        10,
+        4,
+        18,
+        8,
+        28,
+        14,
+        36,
+      ],
+      "line-blur": 1.25,
+      "line-opacity": 1,
+    }),
+    [isDark],
+  )
+
+  const selectionCorePaint = useMemo(
+    () => ({
+      "line-color": isDark ? "#fde68a" : "#b45309",
+      "line-width": [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        1.5,
+        3.5,
+        4,
+        6,
+        8,
+        9,
+        14,
+        12,
+      ],
+      "line-opacity": 1,
+    }),
+    [isDark],
+  )
+
   const handleClick = useCallback(
     (e: MapLayerMouseEvent) => {
       const countyHit = e.features?.find((x) => x.layer.id === "us-counties-fill")
@@ -220,8 +274,24 @@ export function ClimateMap({
           filter={US_COUNTY_FILL_FILTER as never}
           paint={countyLinePaint as Record<string, unknown>}
         />
+        {selectionFilter ? (
+          <Layer
+            id="selection-highlight-halo"
+            type="line"
+            filter={selectionFilter as never}
+            paint={selectionHaloPaint as Record<string, unknown>}
+          />
+        ) : null}
+        {selectionFilter ? (
+          <Layer
+            id="selection-highlight-core"
+            type="line"
+            filter={selectionFilter as never}
+            paint={selectionCorePaint as Record<string, unknown>}
+          />
+        ) : null}
       </Source>
-      {popup ? (
+      {popup && mapPopup ? (
         <Popup
           longitude={popup.lng}
           latitude={popup.lat}
@@ -230,8 +300,8 @@ export function ClimateMap({
           onClose={() => onRegionPick(null)}
           closeButton
           closeOnClick={false}
-          maxWidth="320px"
-          className="[&_.maplibregl-popup-content]:p-3"
+          maxWidth="min(100vw - 1.5rem, 22rem)"
+          className="max-sm:[&_.maplibregl-popup-close-button]:size-9 max-sm:[&_.maplibregl-popup-close-button]:text-lg [&_.maplibregl-popup-content]:max-h-[min(70dvh,32rem)] [&_.maplibregl-popup-content]:overflow-y-auto [&_.maplibregl-popup-content]:p-3 sm:[&_.maplibregl-popup-content]:max-h-none sm:[&_.maplibregl-popup-content]:overflow-visible"
         >
           <RegionPopupContent props={popup.props} />
         </Popup>

@@ -16,10 +16,10 @@ export function TemperatureFilter({
   onChange,
 }: TemperatureFilterProps) {
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between gap-2">
+    <div className="space-y-3 sm:space-y-2">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <span className="text-xs font-medium">Comfort range (°F)</span>
-        <div className="flex flex-wrap items-center justify-end gap-1">
+        <div className="flex flex-wrap items-stretch gap-1.5 sm:items-center sm:justify-end">
           <Badge variant="secondary" className="font-mono text-xs tabular-nums">
             low ≥ {Math.round(tempMin)}°F
           </Badge>
@@ -37,7 +37,7 @@ export function TemperatureFilter({
           const [a, b] = v
           onChange({ tempMin: Math.min(a, b), tempMax: Math.max(a, b) })
         }}
-        className="py-1"
+        className="py-2 sm:py-1"
       />
       <p className="text-muted-foreground text-[0.65rem] leading-snug">
         Regions match when typical annual low ≥ your minimum and typical high
